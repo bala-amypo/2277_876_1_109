@@ -25,25 +25,17 @@ public class RewardRule {
     private String rewardType;
 
     @Column(nullable = false)
-    private Double multiplier;
+    private double multiplier;
 
     @Column(nullable = false)
-    private Boolean active = true;
-
-    public RewardRule() {
-    }
-
-    public RewardRule(Long cardId, String category, String rewardType,
-                      Double multiplier, Boolean active) {
-        this.cardId = cardId;
-        this.category = category;
-        this.rewardType = rewardType;
-        setMultiplier(multiplier);   
-        this.active = active;
-    }
+    private boolean active;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getCardId() {
@@ -57,35 +49,44 @@ public class RewardRule {
     public String getCategory() {
         return category;
     }
- 
+
     public void setCategory(String category) {
         this.category = category;
     }
- 
+
     public String getRewardType() {
         return rewardType;
     }
- 
+
     public void setRewardType(String rewardType) {
         this.rewardType = rewardType;
     }
- 
-    public Double getMultiplier() {
+
+    public double getMultiplier() {
         return multiplier;
     }
- 
-    public void setMultiplier(Double multiplier) {
-        if (multiplier == null || multiplier <= 0) {
-            throw new BadRequestException("Multiplier must be greater than 0");
-        }
+
+    public void setMultiplier(double multiplier) {
         this.multiplier = multiplier;
     }
- 
-    public Boolean getActive() {
+
+    public boolean getActive() {
         return active;
     }
- 
-    public void setActive(Boolean active) {
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public RewardRule() {
+    }
+
+    public RewardRule(Long cardId, String category, String rewardType,
+                      double multiplier, boolean active) {
+        this.cardId = cardId;
+        this.category = category;
+        this.rewardType = rewardType;
+        this.multiplier = multiplier;
         this.active = active;
     }
 }
