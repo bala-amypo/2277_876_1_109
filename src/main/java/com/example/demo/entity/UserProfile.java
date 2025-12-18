@@ -20,7 +20,7 @@ public class UserProfile {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String userId;   // userId (unique)
+    private String userId;
 
     @Column(nullable = false)
     private String fullName;
@@ -40,7 +40,6 @@ public class UserProfile {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-  
     @ManyToMany
     @JoinTable(
         name = "user_favourite_cards",
@@ -54,6 +53,18 @@ public class UserProfile {
         this.createdAt = LocalDateTime.now();
     }
 
+    public UserProfile() {
+    }
+
+    public UserProfile(String userId, String fullName, String email,
+                       String password, String role, Boolean active) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = active;
+    }
 
     public Long getId() {
         return id;
@@ -70,11 +81,11 @@ public class UserProfile {
     public String getFullName() {
         return fullName;
     }
-
+ 
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
-
+ 
     public String getEmail() {
         return email;
     }
