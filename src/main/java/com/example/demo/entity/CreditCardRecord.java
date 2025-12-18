@@ -34,7 +34,6 @@ public class CreditCardRecord {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Many-to-Many with UserProfile (favourited by users)
     @ManyToMany(mappedBy = "favouriteCards")
     private Set<UserProfile> favouredByUsers = new HashSet<>();
 
@@ -63,63 +62,56 @@ public class CreditCardRecord {
     public Long getUserId() {
         return userId;
     }
- 
+
     public void setUserId(Long userId) {
         this.userId = userId;
     }
- 
+
     public String getCardName() {
         return cardName;
     }
- 
+
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
- 
+
     public String getIssuer() {
         return issuer;
     }
- 
+
     public void setIssuer(String issuer) {
         this.issuer = issuer;
     }
- 
+
     public String getCardType() {
         return cardType;
     }
- 
+
     public void setCardType(String cardType) {
         this.cardType = cardType;
     }
- 
+
     public Double getAnnualFee() {
         return annualFee;
     }
- 
+
     public void setAnnualFee(Double annualFee) {
-        if (annualFee < 0) {
-            throw new IllegalArgumentException("Annual fee must be >= 0");
-        }
         this.annualFee = annualFee;
     }
- 
+
     public String getStatus() {
         return status;
     }
- 
+
     public void setStatus(String status) {
         this.status = status;
     }
- 
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public Set<UserProfile> getFavouredByUsers() {
         return favouredByUsers;
-    }
-
-    public void setFavouredByUsers(Set<UserProfile> favouredByUsers) {
-        this.favouredByUsers = favouredByUsers;
     }
 }
