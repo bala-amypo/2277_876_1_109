@@ -56,7 +56,6 @@ public class CreditCardRecord {
         this.status = status;
     }
 
-    // ---------- Getters & Setters ----------
     public Long getId() {
         return id;
     }
