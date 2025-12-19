@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "credit_card_records")
+@Table(name = "credit_card_record")
 public class CreditCardRecord {
 
     @Id
@@ -23,19 +23,19 @@ public class CreditCardRecord {
     private String issuer;
 
     @Column(nullable = false)
-    private String cardType;
+    private String cardType; 
 
     @Column(nullable = false)
     private Double annualFee;
 
     @Column(nullable = false)
-    private String status;
+    private String status; 
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "favouriteCards")
-    private Set<UserProfile> favouredByUsers = new HashSet<>();
+    private Set<UserProfile> users = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
@@ -96,6 +96,9 @@ public class CreditCardRecord {
     }
 
     public void setAnnualFee(Double annualFee) {
+        if (annualFee < 0) {
+            throw new IllegalArgumentException("Annual fee must be >= 0");
+        }
         this.annualFee = annualFee;
     }
 
@@ -111,7 +114,11 @@ public class CreditCardRecord {
         return createdAt;
     }
 
-    public Set<UserProfile> getFavouredByUsers() {
-        return favouredByUsers;
+    public Set<UserProfile> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserProfile> users) {
+        this.users = users;
     }
 }

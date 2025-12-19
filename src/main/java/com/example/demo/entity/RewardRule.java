@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(
-    name = "reward_rules",
+    name = "reward_rule",
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"card_id", "category"})
+        @UniqueConstraint(columnNames = { "cardId", "category" })
     }
 )
 public class RewardRule {
@@ -15,27 +15,42 @@ public class RewardRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "card_id", nullable = false)
+    // Associated credit card
+    @Column(nullable = false)
     private Long cardId;
 
+    // Spend category: GROCERIES, TRAVEL, etc.
     @Column(nullable = false)
     private String category;
 
+    // POINTS, MILES, CASHBACK
     @Column(nullable = false)
     private String rewardType;
 
+    // Reward multiplier
     @Column(nullable = false)
-    private double multiplier;
+    private Double multiplier;
 
+    // Active or inactive rule
     @Column(nullable = false)
-    private boolean active;
+    private Boolean active;
 
-    public Long getId() {
-        return id;
+    // Constructors
+    public RewardRule() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public RewardRule(Long cardId, String category, String rewardType,
+                      Double multiplier, Boolean active) {
+        this.cardId = cardId;
+        this.category = category;
+        this.rewardType = rewardType;
+        this.multiplier = multiplier;
+        this.active = active;
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
 
     public Long getCardId() {
@@ -62,31 +77,19 @@ public class RewardRule {
         this.rewardType = rewardType;
     }
 
-    public double getMultiplier() {
+    public Double getMultiplier() {
         return multiplier;
     }
 
-    public void setMultiplier(double multiplier) {
+    public void setMultiplier(Double multiplier) {
         this.multiplier = multiplier;
     }
 
-    public boolean getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public RewardRule() {
-    }
-
-    public RewardRule(Long cardId, String category, String rewardType,
-                      double multiplier, boolean active) {
-        this.cardId = cardId;
-        this.category = category;
-        this.rewardType = rewardType;
-        this.multiplier = multiplier;
+    public void setActive(Boolean active) {
         this.active = active;
     }
 }
