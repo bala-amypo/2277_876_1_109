@@ -15,27 +15,21 @@ public class RewardRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Associated credit card
     @Column(nullable = false)
     private Long cardId;
 
-    // Spend category: GROCERIES, TRAVEL, etc.
     @Column(nullable = false)
     private String category;
 
-    // POINTS, MILES, CASHBACK
     @Column(nullable = false)
     private String rewardType;
 
-    // Reward multiplier
     @Column(nullable = false)
     private Double multiplier;
 
-    // Active or inactive rule
     @Column(nullable = false)
     private Boolean active;
 
-    // Constructors
     public RewardRule() {
     }
 
