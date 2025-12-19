@@ -48,7 +48,6 @@ public class RewardRule {
         this.active = active;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
