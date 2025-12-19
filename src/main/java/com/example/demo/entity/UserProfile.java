@@ -1,22 +1,44 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(
+    name = "user_profile",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "userId"),
+        @UniqueConstraint(columnNames = "email")
+    }
+)
 public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String userId;
+
+    @Column(nullable = false)
     private String fullName;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String role;
+
+    @Column(nullable = false)
     private Boolean active;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @ManyToMany
     @JoinTable(
@@ -26,6 +48,27 @@ public class UserProfile {
     )
     private Set<CreditCardRecord> favouriteCards = new HashSet<>();
 
+    // Auto-populate createdAt
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Constructors
+    public UserProfile() {
+    }
+
+    public UserProfile(String userId, String fullName, String email,
+                       String password, String role, Boolean active) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = active;
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -78,24 +121,15 @@ public class UserProfile {
         this.active = active;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
     public Set<CreditCardRecord> getFavouriteCards() {
         return favouriteCards;
     }
 
     public void setFavouriteCards(Set<CreditCardRecord> favouriteCards) {
         this.favouriteCards = favouriteCards;
-    }
-
-    public UserProfile() {
-    }
-
-    public UserProfile(String userId, String fullName, String email,
-                       String password, String role, Boolean active) {
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.active = active;
     }
 }
