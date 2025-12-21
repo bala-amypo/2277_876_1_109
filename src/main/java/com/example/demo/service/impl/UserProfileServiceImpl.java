@@ -24,23 +24,30 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfile getUserById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserProfile user = repository.findById(id).orElse(null);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        return user;
     }
 
     @Override
     public UserProfile findByUserId(String userId) {
-        return repository.findAll()
-                .stream()
-                .filter(u -> userId.equals(u.getUserId()))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        for (UserProfile user : repository.findAll()) {
+            if (userId.equals(user.getUserId())) {
+                return user;
+            }
+        }
+        throw new ResourceNotFoundException("User not found");
     }
 
     @Override
     public UserProfile findByEmail(String email) {
-        return repository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserProfile user = repository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        return user;
     }
 
     @Override
