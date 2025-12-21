@@ -1,21 +1,20 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.PurchaseIntent;
-import com.example.demo.repository.PurchaseIntentRepository;
+import com.example.demo.repository.PurchaseIntentRecordRepository;
 import com.example.demo.service.PurchaseIntentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PurchaseIntentServiceImpl implements PurchaseIntentService {
 
-    private final PurchaseIntentRepository repository;
+    private final PurchaseIntentRecordRepository repository;
 
     @Autowired
-    public PurchaseIntentServiceImpl(PurchaseIntentRepository repository) {
+    public PurchaseIntentServiceImpl(PurchaseIntentRecordRepository repository) {
         this.repository = repository;
     }
 
@@ -26,8 +25,8 @@ public class PurchaseIntentServiceImpl implements PurchaseIntentService {
 
     @Override
     public PurchaseIntent getPurchaseIntentById(Long id) {
-        Optional<PurchaseIntent> optional = repository.findById(id);
-        return optional.orElseThrow(() -> new RuntimeException("PurchaseIntent not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("PurchaseIntent not found with id: " + id));
     }
 
     @Override
