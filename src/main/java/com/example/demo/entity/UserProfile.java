@@ -19,12 +19,15 @@ public class UserProfile {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private String role;
 
+    @Column(nullable = false)
     private Boolean active = true;
 
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -60,15 +63,20 @@ public class UserProfile {
         return role;
     }
 
-    public Boolean isActive() {
-        return active;
+    // IMPORTANT: return primitive boolean
+    public boolean isActive() {
+        return Boolean.TRUE.equals(active);
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    // ---------- SETTERS (THIS FIXES YOUR ERRORS) ----------
+    // ---------- SETTERS ----------
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -93,5 +101,7 @@ public class UserProfile {
         this.active = active;
     }
 
-   
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
