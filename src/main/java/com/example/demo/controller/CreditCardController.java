@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CreditCardRecord;
 import com.example.demo.service.CreditCardService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,37 +11,42 @@ import java.util.List;
 @RequestMapping("/api/cards")
 public class CreditCardController {
 
-    private final CreditCardService cardService;
-
-    public CreditCardController(CreditCardService cardService) {
-        this.cardService = cardService;
-    }
+    @Autowired
+    private CreditCardService cardService;
 
     @PostMapping
-    public ResponseEntity<CreditCardRecord> addCard(@RequestBody CreditCardRecord card) {
-        return ResponseEntity.ok(cardService.addCard(card));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CreditCardRecord> updateCard(
-            @PathVariable Long id,
-            @RequestBody CreditCardRecord updated) {
-
-        return ResponseEntity.ok(cardService.updateCard(id, updated));
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CreditCardRecord>> getCardsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(cardService.getCardsByUser(userId));
+    public CreditCardRecord addCard(@RequestBody CreditCardRecord card) {
+        return cardService.addCard(card);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CreditCardRecord> getCardById(@PathVariable Long id) {
-        return ResponseEntity.ok(cardService.getCardById(id));
+    public CreditCardRecord getCardById(@PathVariable Long id) {
+        return cardService.getCardById(id);
     }
 
     @GetMapping
-    public ResponseEntity<List<CreditCardRecord>> getAllCards() {
-        return ResponseEntity.ok(cardService.getAllCards());
+    public List<CreditCardRecord> getAllCards() {
+        return cardService.getAllCards();
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<CreditCardRecord> getCardsByUser(@PathVariable Long userId) {
+        return cardService.getCardsByUser(userId);
+    }
+
+    @GetMapping("/user/{userId}/active")
+    public List<CreditCardRecord> getActiveCardsByUser(@PathVariable Long userId) {
+        return cardService.getActiveCardsByUser(userId);
+    }
+
+    @PutMapping("/{id}")
+    public CreditCardRecord updateCard(@PathVariable Long id, @RequestBody CreditCardRecord card) {
+        card.setId(id);
+        return cardService.updateCard(card);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCard(@PathVariable Long id) {
+        cardService.deleteCard(id);
     }
 }

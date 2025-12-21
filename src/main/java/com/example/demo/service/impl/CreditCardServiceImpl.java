@@ -15,8 +15,18 @@ public class CreditCardServiceImpl implements CreditCardService {
     private CreditCardRecordRepository cardRepo;
 
     @Override
-    public CreditCardRecord createCard(CreditCardRecord card) {
+    public CreditCardRecord addCard(CreditCardRecord card) {
         return cardRepo.save(card);
+    }
+
+    @Override
+    public CreditCardRecord getCardById(Long id) {
+        return cardRepo.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<CreditCardRecord> getAllCards() {
+        return cardRepo.findAll();
     }
 
     @Override
@@ -30,22 +40,12 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public CreditCardRecord updateCard(Long cardId, CreditCardRecord card) {
-        CreditCardRecord existing = cardRepo.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
-
-        existing.setCardNumber(card.getCardNumber());
-        existing.setExpiryDate(card.getExpiryDate());
-        existing.setCvv(card.getCvv());
-        existing.setActive(card.isActive());
-
-        return cardRepo.save(existing);
+    public CreditCardRecord updateCard(CreditCardRecord card) {
+        return cardRepo.save(card);
     }
 
     @Override
-    public void deleteCard(Long cardId) {
-        CreditCardRecord existing = cardRepo.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
-        cardRepo.delete(existing);
+    public void deleteCard(Long id) {
+        cardRepo.deleteById(id);
     }
 }
