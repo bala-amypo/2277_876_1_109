@@ -3,47 +3,46 @@ package com.example.demo.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 public class JwtUtil {
 
-    private final Key signingKey;
-    private final long expirationMs;
+    private final SecretKey key;
+    private final Long expirationMs;
 
     public JwtUtil(byte[] secret, Long expirationMs) {
-        this.signingKey = Keys.hmacShaKeyFor(secret);
+        this.key = Keys.hmacShaKeyFor(secret);
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(String subject) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationMs);
-
+    public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + expirationMs)
+                )
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String extractUsername(String token) {
-        return parseClaims(token).getBody().getSubject();
+        return getClaims(token).getBody().getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            parseClaims(token);
+            getClaims(token);
             return true;
-        } catch (JwtException | IllegalArgumentException ex) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
-    private Jws<Claims> parseClaims(String token) {
+    private Jws<Claims> getClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(signingKey)
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
     }

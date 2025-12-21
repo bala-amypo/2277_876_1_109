@@ -1,7 +1,6 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.UserProfile;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserProfileRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,25 +14,19 @@ import java.util.List;
 @Service
 public class CustomerUserDetailsService implements UserDetailsService {
 
-    private final UserProfileRepository userProfileRepository;
+    private final UserProfileRepository repository;
 
-    public CustomerUserDetailsService(UserProfileRepository userProfileRepository) {
-        this.userProfileRepository = userProfileRepository;
+    public CustomerUserDetailsService(UserProfileRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
-        UserProfile user = userProfileRepository
-                .findByEmail(email)
+        UserProfile user = repository.findByEmail(email)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with email: " + email)
-                );
-
-        if (!user.isActive()) {
-            throw new UsernameNotFoundException("User account is inactive");
-        }
+                        new UsernameNotFoundException("User not found: " + email));
 
         return new User(
                 user.getEmail(),
