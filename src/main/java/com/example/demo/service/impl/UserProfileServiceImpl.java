@@ -19,4 +19,13 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    @Override
+    public void updateUserStatus(Long userId, boolean active) {
+        UserProfile user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setActive(active);
+        userRepository.save(user);
+    }
 }
