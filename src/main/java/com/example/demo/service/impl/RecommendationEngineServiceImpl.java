@@ -1,20 +1,22 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.CreditCardRecord;
-import com.example.demo.repository.CreditCardRecordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.entity.PurchaseIntentRecord;
+import com.example.demo.service.RecommendationEngineService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class RecommendationEngineServiceImpl {
+@Service   // ⭐ THIS IS CRITICAL
+public class RecommendationEngineServiceImpl
+        implements RecommendationEngineService {
 
-    @Autowired
-    private CreditCardRecordRepository cardRepo;
-
-    public List<CreditCardRecord> getActiveCardsForUser(Long userId) {
-        return cardRepo.findByUserIdAndActiveTrue(userId);
+    @Override
+    public List<String> recommend(PurchaseIntentRecord intent) {
+        // dummy logic for now
+        return List.of(
+                "Recommended Item 1",
+                "Recommended Item 2",
+                "Recommended Item 3"
+        );
     }
-
 }
