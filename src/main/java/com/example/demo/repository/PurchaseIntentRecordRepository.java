@@ -1,9 +1,9 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.PurchaseIntentRecord;
+import com.example.demo.entity.PurchaseIntent;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
-public interface PurchaseIntentRecordRepository extends JpaRepository<PurchaseIntentRecord, Long> {
-    List<PurchaseIntentRecord> findByUserId(Long userId);
+@Repository
+public interface PurchaseIntentRecordRepository extends JpaRepository<PurchaseIntent, Long> {
 }
