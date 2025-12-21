@@ -98,6 +98,13 @@
         <scope>test</scope>
     </dependency>
 
+	<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <version>8.1.0</version> <!-- or the latest stable version -->
+</dependency>
+
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
