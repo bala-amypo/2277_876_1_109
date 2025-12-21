@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserProfile;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.service.UserProfileService;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfile getUserById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with id: " + id));
+            .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -35,9 +33,16 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
+    public void updateUserStatus(Long userId, boolean active) {
+        UserProfile user = repository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(active);
+        repository.save(user);
+    }
+
+    @Override
     public UserProfile findByUserId(String userId) {
         return repository.findByUserId(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with userId: " + userId));
+            .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
