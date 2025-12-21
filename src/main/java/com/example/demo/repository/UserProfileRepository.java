@@ -2,11 +2,19 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface UserProfileRepository
-        extends JpaRepository<UserProfile, Long> {
+@Repository
+public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
+    // Used in AuthController
+    boolean existsByEmail(String email);
+
+    // Used in UserProfileServiceImpl
+    Optional<UserProfile> findByUserId(String userId);
+
+    // Used in CustomerUserDetailsService
     Optional<UserProfile> findByEmail(String email);
 }
