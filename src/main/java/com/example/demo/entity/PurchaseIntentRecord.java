@@ -3,14 +3,15 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "purchase_intent_records")
 public class PurchaseIntentRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; 
-    private Double amount; 
+    private String name;
+    private Double amount;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
