@@ -19,25 +19,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomerUserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil,
-                                   CustomerUserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(
+            JwtUtil jwtUtil,
+            CustomerUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String jwt = authHeader.substring(7);
+        if (header != null && header.startsWith("Bearer ")) {
 
-            if (jwtUtil.validateToken(jwt)) {
-                String username = jwtUtil.extractUsername(jwt);
+            String token = header.substring(7);
+
+            if (jwtUtil.validateToken(token)) {
+
+                String username = jwtUtil.extractUsername(token);
 
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(username);
