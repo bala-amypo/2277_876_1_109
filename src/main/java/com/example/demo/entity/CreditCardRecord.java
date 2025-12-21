@@ -1,64 +1,38 @@
+// CreditCardRecord.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "credit_card_records")
 public class CreditCardRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Use "id" so setters/getters are standard
+    private Long id;
 
-    @Column(nullable = false)
     private String cardNumber;
-
-    @Column(nullable = false)
-    private Long userId;
-
-    @Column(nullable = true)
     private String cardHolderName;
+    private LocalDate expiryDate;
+    private boolean active;
+    private Long userId; // link to user
 
-    // Default constructor
-    public CreditCardRecord() {}
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // Parameterized constructor
-    public CreditCardRecord(String cardNumber, Long userId, String cardHolderName) {
-        this.cardNumber = cardNumber;
-        this.userId = userId;
-        this.cardHolderName = cardHolderName;
-    }
+    public String getCardNumber() { return cardNumber; }
+    public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
 
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
+    public String getCardHolderName() { return cardHolderName; }
+    public void setCardHolderName(String cardHolderName) { this.cardHolderName = cardHolderName; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public LocalDate getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(LocalDate expiryDate) { this.expiryDate = expiryDate; }
 
-    public String getCardNumber() {
-        return cardNumber;
-    }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getCardHolderName() {
-        return cardHolderName;
-    }
-
-    public void setCardHolderName(String cardHolderName) {
-        this.cardHolderName = cardHolderName;
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

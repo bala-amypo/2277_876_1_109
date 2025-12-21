@@ -1,13 +1,18 @@
-package com.example.demo.repository;
+@Service
+public class CreditCardServiceImpl implements CreditCardService {
 
-import com.example.demo.entity.CreditCardRecord;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+    @Autowired
+    private CreditCardRecordRepository cardRepo;
 
-import java.util.List;
+    @Override
+    public List<CreditCardRecord> getCardsByUser(Long userId) {
+        return cardRepo.findByUserId(userId);
+    }
 
-@Repository
-public interface CreditCardRecordRepository extends JpaRepository<CreditCardRecord, Long> {
+    @Override
+    public CreditCardRecord createCard(CreditCardRecord card) {
+        return cardRepo.save(card);
+    }
 
-    List<CreditCardRecord> findByUserId(Long userId);
+   
 }
