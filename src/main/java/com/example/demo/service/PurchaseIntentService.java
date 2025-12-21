@@ -1,15 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.PurchaseIntentRecord;
+import com.example.demo.entity.PurchaseIntent;
 import java.util.List;
 
 public interface PurchaseIntentService {
-
-    PurchaseIntentRecord createIntent(PurchaseIntentRecord intent);
-
-    PurchaseIntentRecord getIntentById(Long id);
-
-    List<PurchaseIntentRecord> getIntentsByUser(Long userId);
-
-    List<PurchaseIntentRecord> getAllIntents();
+    PurchaseIntent createPurchaseIntent(PurchaseIntent intent);
+    PurchaseIntent getPurchaseIntentById(Long id);
+    List<PurchaseIntent> getAllPurchaseIntents();
 }
