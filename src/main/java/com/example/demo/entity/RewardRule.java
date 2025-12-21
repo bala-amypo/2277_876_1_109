@@ -3,86 +3,29 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-    name = "reward_rule",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "cardId", "category" })
-    }
-)
 public class RewardRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    private String ruleName;
+    private Integer points;
+    private boolean active;
     private Long cardId;
 
-    @Column(nullable = false)
-    private String category;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Column(nullable = false)
-    private String rewardType;
+    public String getRuleName() { return ruleName; }
+    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
 
-    @Column(nullable = false)
-    private Double multiplier;
+    public Integer getPoints() { return points; }
+    public void setPoints(Integer points) { this.points = points; }
 
-    @Column(nullable = false)
-    private Boolean active;
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 
-    public RewardRule() {
-    }
-
-    public RewardRule(Long cardId, String category, String rewardType,
-                      Double multiplier, Boolean active) {
-        this.cardId = cardId;
-        this.category = category;
-        this.rewardType = rewardType;
-        this.multiplier = multiplier;
-        this.active = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(Long cardId) {
-        this.cardId = cardId;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getRewardType() {
-        return rewardType;
-    }
-
-    public void setRewardType(String rewardType) {
-        this.rewardType = rewardType;
-    }
-
-    public Double getMultiplier() {
-        return multiplier;
-    }
-
-    public void setMultiplier(Double multiplier) {
-        this.multiplier = multiplier;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
+    public Long getCardId() { return cardId; }
+    public void setCardId(Long cardId) { this.cardId = cardId; }
 }
