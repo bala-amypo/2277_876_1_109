@@ -1,58 +1,39 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.RewardRule;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RewardRuleRepository;
 import com.example.demo.service.RewardRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Service   // ⭐ CRITICAL
 public class RewardRuleServiceImpl implements RewardRuleService {
 
-    private final RewardRuleRepository repository;
+    private final RewardRuleRepository rewardRuleRepository;
 
-    public RewardRuleServiceImpl(RewardRuleRepository repository) {
-        this.repository = repository;
+    public RewardRuleServiceImpl(
+            RewardRuleRepository rewardRuleRepository) {
+        this.rewardRuleRepository = rewardRuleRepository;
     }
 
     @Override
     public RewardRule createRule(RewardRule rule) {
-        if (rule.getMultiplier() <= 0) {
-            // 🔥 REQUIRED MESSAGE
-            throw new BadRequestException("Price multiplier must be > 0");
-        }
-        return repository.save(rule);
+        return rewardRuleRepository.save(rule);
     }
 
     @Override
-    public RewardRule updateRule(Long id, RewardRule updated) {
-        RewardRule rule = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
-
-        rule.setCategory(updated.getCategory());
-        rule.setRewardType(updated.getRewardType());
-        rule.setMultiplier(updated.getMultiplier());
-        rule.setActive(updated.getActive());
-
-        return repository.save(rule);
-    }
-
-    @Override
-    public List<RewardRule> getRulesByCard(Long cardId) {
-        return repository.findAll().stream()
-                .filter(r -> cardId.equals(r.getCardId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<RewardRule> getActiveRules() {
-        return repository.findByActiveTrue();
+    public RewardRule getRuleById(Long id) {
+        return rewardRuleRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<RewardRule> getAllRules() {
-        return repository.findAll();
+        return rewardRuleRepository.findAll();
+    }
+
+    @Override
+    public void deleteRule(Long id) {
+        rewardRuleRepository.deleteById(id);
     }
 }
