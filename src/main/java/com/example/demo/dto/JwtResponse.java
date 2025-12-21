@@ -3,16 +3,28 @@ package com.example.demo.dto;
 public class JwtResponse {
 
     private String token;
-    private Long userId;
+    private String type = "Bearer";
+    private Long id;
+    private String userId;
+    private String fullName;
     private String email;
     private String role;
 
     public JwtResponse() {
     }
 
-    public JwtResponse(String token, Long userId, String email, String role) {
+    public JwtResponse(
+            String token,
+            Long id,
+            String userId,
+            String fullName,
+            String email,
+            String role
+    ) {
         this.token = token;
+        this.id = id;
         this.userId = userId;
+        this.fullName = fullName;
         this.email = email;
         this.role = role;
     }
@@ -25,12 +37,36 @@ public class JwtResponse {
         this.token = token;
     }
 
-    public Long getUserId() {
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
