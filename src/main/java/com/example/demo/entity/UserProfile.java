@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(
-    name = "user_profile",
+    name = "user_profiles",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = "userId"),
         @UniqueConstraint(columnNames = "email")
@@ -19,13 +19,13 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String userId;
 
     @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -35,40 +35,25 @@ public class UserProfile {
     private String role;
 
     @Column(nullable = false)
-    private Boolean active;
+    private Boolean active = true;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToMany
     @JoinTable(
-        name = "user_favourite_cards",
+        name = "user_favorite_cards",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "card_id")
     )
     private Set<CreditCardRecord> favouriteCards = new HashSet<>();
 
-    // Auto-populate createdAt
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Constructors
-    public UserProfile() {
-    }
 
-    public UserProfile(String userId, String fullName, String email,
-                       String password, String role, Boolean active) {
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.active = active;
-    }
-
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -84,39 +69,39 @@ public class UserProfile {
     public String getFullName() {
         return fullName;
     }
- 
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
- 
+
     public String getEmail() {
         return email;
     }
- 
+
     public void setEmail(String email) {
         this.email = email;
     }
- 
+
     public String getPassword() {
         return password;
     }
- 
+    
     public void setPassword(String password) {
         this.password = password;
     }
- 
+
     public String getRole() {
         return role;
     }
- 
+    
     public void setRole(String role) {
         this.role = role;
     }
- 
+
     public Boolean getActive() {
         return active;
     }
- 
+    
     public void setActive(Boolean active) {
         this.active = active;
     }
