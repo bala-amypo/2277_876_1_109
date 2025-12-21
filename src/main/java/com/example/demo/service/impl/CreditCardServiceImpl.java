@@ -1,51 +1,51 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CreditCardRecord;
-import com.example.demo.repository.CreditCardRepository;
+import com.example.demo.repository.CreditCardRecordRepository;
 import com.example.demo.service.CreditCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class CreditCardServiceImpl implements CreditCardService {
 
     @Autowired
-    private CreditCardRepository repository;
+    private CreditCardRecordRepository cardRepo;
 
     @Override
     public CreditCardRecord createCard(CreditCardRecord card) {
-        return repository.save(card);
+        return cardRepo.save(card);
     }
 
     @Override
-    public CreditCardRecord getCardById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Credit card not found with id: " + id));
+    public List<CreditCardRecord> getCardsByUser(Long userId) {
+        return cardRepo.findByUserId(userId);
     }
 
     @Override
-    public List<CreditCardRecord> getAllCards() {
-        return repository.findAll();
+    public List<CreditCardRecord> getActiveCardsByUser(Long userId) {
+        return cardRepo.findByUserIdAndActiveTrue(userId);
     }
 
     @Override
-    public List<CreditCardRecord> getCardsByUserId(Long userId) {
-        return repository.findByUserId(userId);
+    public CreditCardRecord updateCard(Long cardId, CreditCardRecord card) {
+        CreditCardRecord existing = cardRepo.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
+
+        existing.setCardNumber(card.getCardNumber());
+        existing.setExpiryDate(card.getExpiryDate());
+        existing.setCvv(card.getCvv());
+        existing.setActive(card.isActive());
+
+        return cardRepo.save(existing);
     }
 
     @Override
-    public CreditCardRecord updateCard(Long id, CreditCardRecord updatedCard) {
-        CreditCardRecord existing = getCardById(id);
-        updatedCard.setId(existing.getId()); // Important: keep the same ID
-        return repository.save(updatedCard);
-    }
-
-    @Override
-    public void deleteCard(Long id) {
-        CreditCardRecord existing = getCardById(id);
-        repository.delete(existing);
+    public void deleteCard(Long cardId) {
+        CreditCardRecord existing = cardRepo.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
+        cardRepo.delete(existing);
     }
 }
