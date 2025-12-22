@@ -62,7 +62,6 @@ public class UserProfile {
         return role;
     }
 
-    // IMPORTANT: return primitive boolean
     public boolean isActive() {
         return Boolean.TRUE.equals(active);
     }
