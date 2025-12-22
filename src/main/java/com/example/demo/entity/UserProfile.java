@@ -38,7 +38,6 @@ public class UserProfile {
         }
     }
 
-    // ---------- GETTERS ----------
     public Long getId() {
         return id;
     }
@@ -72,7 +71,6 @@ public class UserProfile {
         return createdAt;
     }
 
-    // ---------- SETTERS ----------
     public void setId(Long id) {
         this.id = id;
     }
