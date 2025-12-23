@@ -9,12 +9,9 @@ import java.util.Optional;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
-    // Used in AuthController
     boolean existsByEmail(String email);
 
-    // Used in UserProfileServiceImpl
     Optional<UserProfile> findByUserId(String userId);
 
-    // Used in CustomerUserDetailsService
     Optional<UserProfile> findByEmail(String email);
 }
