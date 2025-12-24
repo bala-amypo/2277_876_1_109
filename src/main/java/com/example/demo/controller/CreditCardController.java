@@ -1,52 +1,58 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.CreditCardRecord;
-import com.example.demo.service.CreditCardService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.CreditCardRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cards")
+@RequestMapping("/cards")
 public class CreditCardController {
 
-    @Autowired
-    private CreditCardService cardService;
+    private final CreditCardRepository repository;
 
-    @PostMapping
-    public CreditCardRecord addCard(@RequestBody CreditCardRecord card) {
-        return cardService.addCard(card);
+    public CreditCardController(CreditCardRepository repository) {
+        this.repository = repository;
     }
 
-    @GetMapping("/{id}")
-    public CreditCardRecord getCardById(@PathVariable Long id) {
-        return cardService.getCardById(id);
+    @PostMapping
+    public CreditCardRecord create(@RequestBody CreditCardRecord card) {
+        return repository.save(card);
     }
 
     @GetMapping
-    public List<CreditCardRecord> getAllCards() {
-        return cardService.getAllCards();
+    public List<CreditCardRecord> getAll() {
+        return repository.findAll();
     }
 
-    @GetMapping("/user/{userId}")
-    public List<CreditCardRecord> getCardsByUser(@PathVariable Long userId) {
-        return cardService.getCardsByUser(userId);
-    }
-
-    @GetMapping("/user/{userId}/active")
-    public List<CreditCardRecord> getActiveCardsByUser(@PathVariable Long userId) {
-        return cardService.getActiveCardsByUser(userId);
+    @GetMapping("/{id}")
+    public CreditCardRecord getById(@PathVariable Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Card not found"));
     }
 
     @PutMapping("/{id}")
-    public CreditCardRecord updateCard(@PathVariable Long id, @RequestBody CreditCardRecord card) {
-        card.setId(id);
-        return cardService.updateCard(card);
+    public CreditCardRecord update(
+            @PathVariable Long id,
+            @RequestBody CreditCardRecord updatedCard) {
+
+        CreditCardRecord existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Card not found"));
+
+        existing.setCardName(updatedCard.getCardName());
+        existing.setIssuer(updatedCard.getIssuer());
+        existing.setCardType(updatedCard.getCardType());
+        existing.setAnnualFee(updatedCard.getAnnualFee());
+        existing.setStatus(updatedCard.getStatus());
+
+        return repository.save(existing);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCard(@PathVariable Long id) {
-        cardService.deleteCard(id);
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        repository.deleteById(id);
+        return ResponseEntity.ok("Card deleted");
     }
 }
