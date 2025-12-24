@@ -5,8 +5,6 @@ import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.service.UserProfileService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
@@ -17,41 +15,31 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile createUser(UserProfile userProfile) {
+    public UserProfile register(UserProfile userProfile) {
+
+        if (repository.existsByUserId(userProfile.getUserId())) {
+            throw new RuntimeException("UserId already exists");
+        }
+
+        if (repository.existsByEmail(userProfile.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
         return repository.save(userProfile);
     }
 
     @Override
-    public UserProfile getUserById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    @Override
-    public List<UserProfile> getAllUsers() {
-        return repository.findAll();
-    }
-
-    @Override
-    public UserProfile updateUserStatus(Long id, boolean active) {
-        UserProfile user = getUserById(id);
-        user.setActive(active);
-        return repository.save(user);
-    }
-
-    @Override
-    public UserProfile findByUserId(String userId) {
-        return repository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    @Override
     public UserProfile login(String email, String password) {
+
         UserProfile user = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!Boolean.TRUE.equals(user.getActive())) {
             throw new RuntimeException("User is inactive");
+        }
+
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid credentials");
         }
 
         return user;
