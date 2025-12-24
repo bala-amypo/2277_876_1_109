@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "reward_rules")
 public class RewardRule {
 
     @Id
@@ -10,12 +11,17 @@ public class RewardRule {
     private Long id;
 
     private Long cardId;
+
     private String category;
-    private double multiplier;
-    private boolean active;
 
-    // Getters and setters
+    private Double multiplier;
 
+    private Boolean active;
+
+    // Constructors
+    public RewardRule() {}
+
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -25,9 +31,9 @@ public class RewardRule {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public double getMultiplier() { return multiplier; }
-    public void setMultiplier(double multiplier) { this.multiplier = multiplier; }
+    public Double getMultiplier() { return multiplier; }
+    public void setMultiplier(Double multiplier) { this.multiplier = multiplier; }
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 }

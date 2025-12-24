@@ -21,18 +21,14 @@ public class CreditCardRecord {
 
     private String status;
 
-    private Boolean active;
-
     private LocalDateTime createdAt;
 
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) createdAt = LocalDateTime.now();
-        if (active == null) active = true;
-        if (status == null) status = "ACTIVE";
-    }
+    private Boolean active;
 
-    // ---------------- Getters & Setters ----------------
+    // Constructors
+    public CreditCardRecord() {}
+
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -51,9 +47,17 @@ public class CreditCardRecord {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (status == null) status = "ACTIVE";
+        if (active == null) active = true;
+        if (annualFee == null) annualFee = 0.0;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "recommendations")
 public class RecommendationRecord {
 
     @Id
@@ -10,13 +11,20 @@ public class RecommendationRecord {
     private Long id;
 
     private Long userId;
+
     private Long purchaseIntentId;
+
     private Long recommendedCardId;
-    private double expectedRewardValue;
+
+    private Double expectedRewardValue;
+
+    @Column(columnDefinition = "TEXT")
     private String calculationDetailsJson;
 
-    // Getters and setters
+    // Constructors
+    public RecommendationRecord() {}
 
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -29,8 +37,8 @@ public class RecommendationRecord {
     public Long getRecommendedCardId() { return recommendedCardId; }
     public void setRecommendedCardId(Long recommendedCardId) { this.recommendedCardId = recommendedCardId; }
 
-    public double getExpectedRewardValue() { return expectedRewardValue; }
-    public void setExpectedRewardValue(double expectedRewardValue) { this.expectedRewardValue = expectedRewardValue; }
+    public Double getExpectedRewardValue() { return expectedRewardValue; }
+    public void setExpectedRewardValue(Double expectedRewardValue) { this.expectedRewardValue = expectedRewardValue; }
 
     public String getCalculationDetailsJson() { return calculationDetailsJson; }
     public void setCalculationDetailsJson(String calculationDetailsJson) { this.calculationDetailsJson = calculationDetailsJson; }

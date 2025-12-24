@@ -8,8 +8,11 @@ import java.util.List;
 
 @Repository
 public interface CreditCardRecordRepository extends JpaRepository<CreditCardRecord, Long> {
-
     List<CreditCardRecord> findByUserId(Long userId);
-
     List<CreditCardRecord> findByUserIdAndActiveTrue(Long userId);
+    
+    // Custom query for Recommendation Engine
+    default List<CreditCardRecord> findActiveCardsByUser(Long userId) {
+        return findByUserIdAndActiveTrue(userId);
+    }
 }

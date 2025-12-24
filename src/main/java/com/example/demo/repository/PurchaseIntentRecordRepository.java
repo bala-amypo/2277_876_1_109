@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PurchaseIntentRecordRepository extends JpaRepository<PurchaseIntentRecord, Long> {
-
     List<PurchaseIntentRecord> findByUserId(Long userId);
 }
