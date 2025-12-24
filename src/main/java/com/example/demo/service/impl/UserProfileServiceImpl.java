@@ -3,38 +3,32 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.UserProfile;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.service.UserProfileService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class UserProfileServiceImpl implements UserProfileService {
 
-    private final UserProfileRepository repository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserProfileRepository userProfileRepository;
 
-    public UserProfileServiceImpl(UserProfileRepository repository, PasswordEncoder passwordEncoder) {
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
+    public UserProfileServiceImpl(UserProfileRepository userProfileRepository) {
+        this.userProfileRepository = userProfileRepository;
     }
 
     @Override
     public UserProfile createUser(UserProfile user) {
-        if (repository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-        if (user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        return repository.save(user);
+        return userProfileRepository.save(user);
     }
 
     @Override
     public UserProfile getUserById(Long id) {
-        return repository.findById(id).orElseThrow();
+        return userProfileRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<UserProfile> getAllUsers() {
-        return repository.findAll();
+        return userProfileRepository.findAll();
     }
 }

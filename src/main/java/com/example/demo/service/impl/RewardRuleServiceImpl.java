@@ -3,29 +3,31 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.RewardRule;
 import com.example.demo.repository.RewardRuleRepository;
 import com.example.demo.service.RewardRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RewardRuleServiceImpl implements RewardRuleService {
 
-    private final RewardRuleRepository repository;
+    private final RewardRuleRepository rewardRuleRepository;
 
-    public RewardRuleServiceImpl(RewardRuleRepository repository) {
-        this.repository = repository;
+    public RewardRuleServiceImpl(RewardRuleRepository rewardRuleRepository) {
+        this.rewardRuleRepository = rewardRuleRepository;
     }
 
     @Override
     public RewardRule createRule(RewardRule rule) {
-        return repository.save(rule);
+        return rewardRuleRepository.save(rule);
     }
 
     @Override
     public List<RewardRule> getActiveRules() {
-        return repository.findByActiveTrue();
+        return rewardRuleRepository.findByActiveTrue();
     }
 
     @Override
     public List<RewardRule> getAllRules() {
-        return repository.findAll();
+        return rewardRuleRepository.findAll();
     }
 }
