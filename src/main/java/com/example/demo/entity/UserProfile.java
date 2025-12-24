@@ -2,12 +2,9 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(
-    name = "user_profile",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = "userId"),
         @UniqueConstraint(columnNames = "email")
@@ -22,13 +19,11 @@ public class UserProfile {
     @Column(nullable = false, unique = true)
     private String userId;
 
-    @Column(nullable = false)
     private String fullName;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     private String role;
@@ -37,22 +32,12 @@ public class UserProfile {
 
     private LocalDateTime createdAt;
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_favourite_cards",
-        joinColumns = @JoinColumn(name = "user_profile_id"),
-        inverseJoinColumns = @JoinColumn(name = "card_id")
-    )
-    private Set<CreditCardRecord> favouriteCards = new HashSet<>();
-
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public UserProfile() {}
-
-    /* ========= GETTERS & SETTERS ========= */
+    /* ===== GETTERS / SETTERS ===== */
 
     public Long getId() {
         return id;
@@ -98,8 +83,13 @@ public class UserProfile {
         this.role = role;
     }
 
-    /** ✅ REQUIRED FOR SERVICE */
+    /** REQUIRED BY SERVICES */
     public Boolean getActive() {
+        return active;
+    }
+
+    /** REQUIRED BY SPRING SECURITY */
+    public Boolean isActive() {
         return active;
     }
 
@@ -109,13 +99,5 @@ public class UserProfile {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public Set<CreditCardRecord> getFavouriteCards() {
-        return favouriteCards;
-    }
-
-    public void setFavouriteCards(Set<CreditCardRecord> favouriteCards) {
-        this.favouriteCards = favouriteCards;
     }
 }
