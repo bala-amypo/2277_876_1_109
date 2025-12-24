@@ -4,9 +4,9 @@ import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.UserProfile;
+import com.example.demo.service.UserProfileService;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,56 +20,57 @@ import java.util.UUID;
 public class AuthController {
 
     private final UserProfileService userService;
-    private final UserProfileRepository userRepo;
+    private final UserProfileRepository userProfileRepository;
+    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
 
     public AuthController(UserProfileService userService,
-                          UserProfileRepository userRepo,
-                          AuthenticationManager authManager,
+                          UserProfileRepository userProfileRepository,
+                          AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
                           PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.userRepo = userRepo;
-        this.authManager = authManager;
+        this.userProfileRepository = userProfileRepository;
+        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest req) {
-
-        if (userRepo.existsByEmail(req.getEmail())) {
+    public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request) {
+        if (userProfileRepository.existsByEmail(request.getEmail())) {
             return ResponseEntity.badRequest().build();
         }
 
         UserProfile user = new UserProfile();
         user.setUserId(UUID.randomUUID().toString());
-        user.setFullName(req.getFullName());
-        user.setEmail(req.getEmail());
-        user.setPassword(passwordEncoder.encode(req.getPassword()));
-        user.setRole(req.getRole() != null ? req.getRole() : "USER");
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("USER");
         user.setActive(true);
 
-        UserProfile saved = userService.createUser(user);
+        userProfileRepository.save(user);
 
-        String token = jwtUtil.generateToken(saved.getId(), saved.getEmail(), saved.getRole());
-        JwtResponse resp = new JwtResponse(saved.getId(), saved.getEmail(), saved.getRole(), token);
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
+        JwtResponse response = new JwtResponse(user.getId(), user.getEmail(), token);
 
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest req) {
-        authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        UserProfile user = userRepo.findByEmail(req.getEmail()).orElseThrow();
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
-        JwtResponse resp = new JwtResponse(user.getId(), user.getEmail(), user.getRole(), token);
+        UserProfile user = userProfileRepository.findByEmail(request.getEmail())
+                .orElseThrow();
 
-        return ResponseEntity.ok(resp);
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
+        JwtResponse response = new JwtResponse(user.getId(), user.getEmail(), token);
+
+        return ResponseEntity.ok(response);
     }
 }
