@@ -12,19 +12,19 @@ import java.util.UUID;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserProfileRepository userProfileRepository;
+    private final UserProfileRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserProfileRepository userProfileRepository,
+    public AuthController(UserProfileRepository repository,
                           PasswordEncoder passwordEncoder) {
-        this.userProfileRepository = userProfileRepository;
+        this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserProfile user) {
 
-        if (userProfileRepository.existsByEmail(user.getEmail())) {
+        if (repository.existsByEmail(user.getEmail())) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
 
@@ -33,7 +33,7 @@ public class AuthController {
         user.setRole("USER");
         user.setActive(true);
 
-        userProfileRepository.save(user);
+        repository.save(user);
 
         return ResponseEntity.ok("User registered successfully");
     }

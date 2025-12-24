@@ -1,9 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "credit_card_records")
 public class CreditCardRecord {
 
     @Id
@@ -11,68 +13,75 @@ public class CreditCardRecord {
     private Long id;
 
     private Long userId;
-    private String cardNumber;
-    private String cvv;
-    private String expiryDate;
-    private boolean active;
+    private String cardName;
+    private String issuer;
+    private String cardType;
+    private Double annualFee;
+    private String status;
 
-    // Constructors
+    private LocalDateTime createdAt;
+
+    @ManyToMany(mappedBy = "favouriteCards")
+    private Set<UserProfile> users = new HashSet<>();
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     public CreditCardRecord() {}
 
-    public CreditCardRecord(Long userId, String cardNumber, String cvv, String expiryDate, boolean active) {
-        this.userId = userId;
-        this.cardNumber = cardNumber;
-        this.cvv = cvv;
-        this.expiryDate = expiryDate;
-        this.active = active;
-    }
+    /* getters & setters */
 
-    // Getters & Setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getUserId() {
         return userId;
     }
-
+ 
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
-    public String getCardNumber() {
-        return cardNumber;
+ 
+    public String getCardName() {
+        return cardName;
     }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+ 
+    public void setCardName(String cardName) {
+        this.cardName = cardName;
     }
-
-    public String getCvv() {
-        return cvv;
+ 
+    public String getIssuer() {
+        return issuer;
     }
-
-    public void setCvv(String cvv) {
-        this.cvv = cvv;
+ 
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
     }
-
-    public String getExpiryDate() {
-        return expiryDate;
+ 
+    public String getCardType() {
+        return cardType;
     }
-
-    public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
+ 
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
-
-    public boolean isActive() {
-        return active;
+ 
+    public Double getAnnualFee() {
+        return annualFee;
     }
-
-    public void setActive(boolean active) {
-        this.active = active;
+ 
+    public void setAnnualFee(Double annualFee) {
+        this.annualFee = annualFee;
+    }
+ 
+    public String getStatus() {
+        return status;
+    }
+ 
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

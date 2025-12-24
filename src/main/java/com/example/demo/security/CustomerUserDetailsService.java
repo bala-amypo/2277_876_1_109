@@ -22,7 +22,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
         UserProfile user = repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (!Boolean.TRUE.equals(user.isActive())) {
+        if (!user.isActive()) {
             throw new DisabledException("User is inactive");
         }
 

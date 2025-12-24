@@ -6,6 +6,7 @@ import com.example.demo.service.UserProfileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
@@ -17,17 +18,16 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile createUser(UserProfile userProfile) {
+    public UserProfile createUser(UserProfile user) {
 
-        if (repository.existsByUserId(userProfile.getUserId())) {
-            throw new RuntimeException("UserId already exists");
-        }
-
-        if (repository.existsByEmail(userProfile.getEmail())) {
+        if (repository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
-        return repository.save(userProfile);
+        user.setUserId(UUID.randomUUID().toString());
+        user.setActive(true);
+
+        return repository.save(user);
     }
 
     @Override
@@ -52,22 +52,5 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfile findByUserId(String userId) {
         return repository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    @Override
-    public UserProfile login(String email, String password) {
-
-        UserProfile user = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!Boolean.TRUE.equals(user.getActive())) {
-            throw new RuntimeException("User inactive");
-        }
-
-        if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        return user;
     }
 }

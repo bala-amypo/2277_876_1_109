@@ -2,9 +2,12 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(
+    name = "user_profile",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = "userId"),
         @UniqueConstraint(columnNames = "email")
@@ -16,28 +19,31 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String userId;
-
     private String fullName;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
     private String password;
-
     private String role;
-
     private Boolean active;
 
     private LocalDateTime createdAt;
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_favourite_cards",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "card_id")
+    )
+    private Set<CreditCardRecord> favouriteCards = new HashSet<>();
+
     @PrePersist
-    protected void onCreate() {
+    public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    /* ===== GETTERS / SETTERS ===== */
+    public UserProfile() {}
+
+    /* ===== getters & setters ===== */
 
     public Long getId() {
         return id;
@@ -70,34 +76,40 @@ public class UserProfile {
     public String getPassword() {
         return password;
     }
-
+ 
     public void setPassword(String password) {
         this.password = password;
     }
-
+ 
     public String getRole() {
         return role;
     }
-
+ 
     public void setRole(String role) {
         this.role = role;
     }
 
-    /** REQUIRED BY SERVICES */
     public Boolean getActive() {
         return active;
     }
 
-    /** REQUIRED BY SPRING SECURITY */
-    public Boolean isActive() {
-        return active;
+    public boolean isActive() {
+        return Boolean.TRUE.equals(active);
     }
-
+ 
     public void setActive(Boolean active) {
         this.active = active;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Set<CreditCardRecord> getFavouriteCards() {
+        return favouriteCards;
+    }
+
+    public void setFavouriteCards(Set<CreditCardRecord> favouriteCards) {
+        this.favouriteCards = favouriteCards;
     }
 }
