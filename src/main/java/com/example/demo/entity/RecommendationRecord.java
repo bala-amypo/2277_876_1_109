@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 public class RecommendationRecord {
+
     private Long id;
     private Long userId;
     private Long purchaseIntentId;
@@ -8,5 +9,29 @@ public class RecommendationRecord {
     private Double expectedRewardValue;
     private String calculationDetailsJson;
 
-    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+
+    public Long getPurchaseIntentId() { return purchaseIntentId; }
+    public void setPurchaseIntentId(Long purchaseIntentId) {
+        this.purchaseIntentId = purchaseIntentId;
+    }
+
+    public Long getRecommendedCardId() { return recommendedCardId; }
+    public void setRecommendedCardId(Long recommendedCardId) {
+        this.recommendedCardId = recommendedCardId;
+    }
+
+    public Double getExpectedRewardValue() { return expectedRewardValue; }
+    public void setExpectedRewardValue(Double expectedRewardValue) {
+        this.expectedRewardValue = expectedRewardValue;
+    }
+
+    public String getCalculationDetailsJson() { return calculationDetailsJson; }
+    public void setCalculationDetailsJson(String json) {
+        this.calculationDetailsJson = json;
+    }
 }
