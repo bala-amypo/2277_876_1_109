@@ -1,45 +1,19 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.UserProfile;
-import com.example.demo.repository.UserProfileRepository;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-@Service
-public class UserProfileService {
+public interface UserProfileService {
 
-    private final UserProfileRepository userProfileRepository;
+    UserProfile createUser(UserProfile userProfile);
 
-    public UserProfileService(UserProfileRepository userProfileRepository) {
-        this.userProfileRepository = userProfileRepository;
-    }
+    UserProfile getUserById(Long id);
 
-    public UserProfile createUser(UserProfile userProfile) {
+    List<UserProfile> getAllUsers();
 
-        if (userProfileRepository.existsByUserId(userProfile.getUserId())) {
-            throw new RuntimeException("UserId already exists");
-        }
+    UserProfile updateUserStatus(Long id, boolean active);
 
-        if (userProfileRepository.existsByEmail(userProfile.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
+    UserProfile findByUserId(String userId);
 
-        return userProfileRepository.save(userProfile);
-    }
-
-    public UserProfile login(String email, String password) {
-
-        UserProfile user = userProfileRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!Boolean.TRUE.equals(user.getActive())) {
-            throw new RuntimeException("User is inactive");
-        }
-
-        if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        return user;
-    }
+    UserProfile login(String email, String password);
 }

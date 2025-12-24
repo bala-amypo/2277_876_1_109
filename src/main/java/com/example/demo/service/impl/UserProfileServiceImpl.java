@@ -17,14 +17,14 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile createUser(UserProfile user) {
-        return repository.save(user);
+    public UserProfile createUser(UserProfile userProfile) {
+        return repository.save(userProfile);
     }
 
     @Override
     public UserProfile getUserById(Long id) {
         return repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -33,16 +33,27 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public void updateUserStatus(Long userId, boolean active) {
-        UserProfile user = repository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserProfile updateUserStatus(Long id, boolean active) {
+        UserProfile user = getUserById(id);
         user.setActive(active);
-        repository.save(user);
+        return repository.save(user);
     }
 
     @Override
     public UserProfile findByUserId(String userId) {
         return repository.findByUserId(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public UserProfile login(String email, String password) {
+        UserProfile user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            throw new RuntimeException("User is inactive");
+        }
+
+        return user;
     }
 }
