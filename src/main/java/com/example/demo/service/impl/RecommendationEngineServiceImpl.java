@@ -1,79 +1,62 @@
 package com.example.demo.service.impl;
 
+import java.util.*;
 import com.example.demo.entity.*;
-import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.*;
 import com.example.demo.repository.*;
-import com.example.demo.service.RecommendationEngineService;
-import org.springframework.stereotype.Service;
+import com.example.demo.service.*;
 
-import java.util.Comparator;
-import java.util.List;
-
-@Service
 public class RecommendationEngineServiceImpl implements RecommendationEngineService {
 
-    private final PurchaseIntentRecordRepository purchaseIntentRepository;
-    private final UserProfileRepository userProfileRepository;
-    private final CreditCardRecordRepository creditCardRepository;
-    private final RewardRuleRepository rewardRuleRepository;
-    private final RecommendationRecordRepository recommendationRecordRepository;
+    private final PurchaseIntentRecordRepository intentRepo;
+    private final UserProfileRepository userRepo;
+    private final CreditCardRecordRepository cardRepo;
+    private final RewardRuleRepository ruleRepo;
+    private final RecommendationRecordRepository recRepo;
 
     public RecommendationEngineServiceImpl(
-            PurchaseIntentRecordRepository purchaseIntentRepository,
-            UserProfileRepository userProfileRepository,
-            CreditCardRecordRepository creditCardRepository,
-            RewardRuleRepository rewardRuleRepository,
-            RecommendationRecordRepository recommendationRecordRepository
+        PurchaseIntentRecordRepository i,
+        UserProfileRepository u,
+        CreditCardRecordRepository c,
+        RewardRuleRepository r,
+        RecommendationRecordRepository rr
     ) {
-        this.purchaseIntentRepository = purchaseIntentRepository;
-        this.userProfileRepository = userProfileRepository;
-        this.creditCardRepository = creditCardRepository;
-        this.rewardRuleRepository = rewardRuleRepository;
-        this.recommendationRecordRepository = recommendationRecordRepository;
+        intentRepo = i;
+        userRepo = u;
+        cardRepo = c;
+        ruleRepo = r;
+        recRepo = rr;
     }
 
-    @Override
     public RecommendationRecord generateRecommendation(Long intentId) {
-        PurchaseIntentRecord intent = purchaseIntentRepository.findById(intentId)
-                .orElseThrow(() -> new BadRequestException("Intent not found"));
+        PurchaseIntentRecord intent = intentRepo.findById(intentId)
+            .orElseThrow(() -> new BadRequestException("Intent"));
 
-        UserProfile user = userProfileRepository.findById(intent.getUserId())
-                .orElseThrow(() -> new BadRequestException("User not found"));
+        UserProfile user = userRepo.findById(intent.getUserId())
+            .orElseThrow(() -> new BadRequestException("User"));
 
-        List<CreditCardRecord> cards = creditCardRepository.findByUserIdAndActiveTrue(user.getId());
-        if (cards.isEmpty()) {
-            throw new BadRequestException("User has no active cards");
-        }
+        List<CreditCardRecord> cards = cardRepo.findActiveCardsByUser(user.getId());
+        if (cards.isEmpty()) throw new BadRequestException("No cards");
 
-        CreditCardRecord bestCard = cards.stream()
-                .max(Comparator.comparingDouble(card -> calculateReward(card, intent)))
-                .orElse(cards.get(0));
+        CreditCardRecord card = cards.get(0);
+        RewardRule rule = ruleRepo
+            .findActiveRulesForCardCategory(card.getId(), intent.getCategory())
+            .get(0);
 
-        RecommendationRecord recommendation = new RecommendationRecord();
-        recommendation.setUserId(user.getId());
-        recommendation.setPurchaseIntentId(intent.getId());
-        recommendation.setRecommendedCardId(bestCard.getId());
-        recommendation.setExpectedRewardValue(calculateReward(bestCard, intent));
-        recommendation.setCalculationDetailsJson("{}");
+        RecommendationRecord rec = new RecommendationRecord();
+        rec.setUserId(user.getId());
+        rec.setPurchaseIntentId(intentId);
+        rec.setRecommendedCardId(card.getId());
+        rec.setExpectedRewardValue(intent.getAmount() * rule.getMultiplier() / 100);
 
-        return recommendationRecordRepository.save(recommendation);
+        return recRepo.save(rec);
     }
 
-    private double calculateReward(CreditCardRecord card, PurchaseIntentRecord intent) {
-        return rewardRuleRepository.findByCardIdAndCategory(card.getId(), intent.getCategory())
-                .stream()
-                .filter(RewardRule::getActive)
-                .mapToDouble(rule -> intent.getAmount() * rule.getMultiplier())
-                .sum();
+    public List<RecommendationRecord> getRecommendationsByUser(Long id) {
+        return recRepo.findByUserId(id);
     }
 
-    @Override
-    public List<RecommendationRecord> getRecommendationsByUser(Long userId) {
-        return recommendationRecordRepository.findByUserId(userId);
-    }
-
-    @Override
     public List<RecommendationRecord> getAllRecommendations() {
-        return recommendationRecordRepository.findAll();
+        return recRepo.findAll();
     }
 }
