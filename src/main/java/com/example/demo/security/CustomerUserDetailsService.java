@@ -2,6 +2,7 @@ package com.example.demo.security;
 
 import com.example.demo.entity.UserProfile;
 import com.example.demo.repository.UserProfileRepository;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
