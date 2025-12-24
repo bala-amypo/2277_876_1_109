@@ -1,11 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.UserProfile;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
+public interface UserProfileService extends UserDetailsService {
 
-public interface UserProfileService {
-    UserProfile createUser(UserProfile user);
-    UserProfile getUserById(Long id);
-    List<UserProfile> getAllUsers();
+    boolean existsByEmail(String email);
+
+    UserProfile getByEmail(String email);
 }

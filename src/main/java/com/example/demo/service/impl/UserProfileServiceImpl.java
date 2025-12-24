@@ -2,13 +2,13 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserProfile;
 import com.example.demo.repository.UserProfileRepository;
+import com.example.demo.service.UserProfileService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserProfileServiceImpl implements UserDetailsService {
+public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
 
@@ -17,16 +17,20 @@ public class UserProfileServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserProfile user = userProfileRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+    public boolean existsByEmail(String email) {
+        return userProfileRepository.existsByEmail(email);
+    }
 
-        // Convert your UserProfile to Spring Security UserDetails
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole())
-                .disabled(user.getActive() == null || !user.getActive())
-                .build();
+    @Override
+    public UserProfile getByEmail(String email) {
+        return userProfileRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserProfile user = userProfileRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        return user; // UserProfile must implement UserDetails
     }
 }
