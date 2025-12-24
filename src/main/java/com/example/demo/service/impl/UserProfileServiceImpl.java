@@ -2,14 +2,13 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserProfile;
 import com.example.demo.repository.UserProfileRepository;
-import com.example.demo.service.UserProfileService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
-public class UserProfileServiceImpl implements UserProfileService {
+public class UserProfileServiceImpl implements UserDetailsService {
 
     private final UserProfileRepository userProfileRepository;
 
@@ -18,17 +17,16 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile createUser(UserProfile user) {
-        return userProfileRepository.save(user);
-    }
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserProfile user = userProfileRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-    @Override
-    public UserProfile getUserById(Long id) {
-        return userProfileRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<UserProfile> getAllUsers() {
-        return userProfileRepository.findAll();
+        // Convert your UserProfile to Spring Security UserDetails
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .disabled(user.getActive() == null || !user.getActive())
+                .build();
     }
 }
