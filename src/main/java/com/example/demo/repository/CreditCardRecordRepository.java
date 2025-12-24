@@ -1,13 +1,16 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.CreditCardRecord;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import com.example.demo.entity.CreditCardRecord;
 
-@Repository
-public interface CreditCardRecordRepository extends JpaRepository<CreditCardRecord, Long> {
+public interface CreditCardRecordRepository {
+
+    CreditCardRecord save(CreditCardRecord card);
+
     List<CreditCardRecord> findByUserId(Long userId);
-    List<CreditCardRecord> findByUserIdAndActiveTrue(Long userId);
+
+    List<CreditCardRecord> findAll();
+
+    // ✅ REQUIRED BY RecommendationEngineService + TESTS
+    List<CreditCardRecord> findActiveCardsByUser(Long userId);
 }
