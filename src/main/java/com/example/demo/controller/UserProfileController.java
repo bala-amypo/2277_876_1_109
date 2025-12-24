@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.UserProfile;
 import com.example.demo.service.UserProfileService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,29 +18,18 @@ public class UserProfileController {
     }
 
     @PostMapping
-    public UserProfile createUser(@RequestBody UserProfile user) {
-        return userService.createUser(user);
+    public ResponseEntity<UserProfile> createUser(@RequestBody UserProfile user) {
+        UserProfile saved = userService.createUser(user);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}")
-    public UserProfile getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserProfile> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping
-    public List<UserProfile> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @PutMapping("/{id}/status")
-    public UserProfile updateStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active) {
-        return userService.updateUserStatus(id, active);
-    }
-
-    @GetMapping("/by-userid/{userId}")
-    public UserProfile findByUserId(@PathVariable String userId) {
-        return userService.findByUserId(userId);
+    public ResponseEntity<List<UserProfile>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
