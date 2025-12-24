@@ -1,9 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.PurchaseIntentRecord;
+import com.example.demo.entity.RecommendationRecord;
+
 import java.util.List;
 
 public interface RecommendationEngineService {
 
-    List<String> recommend(PurchaseIntentRecord intent);
+    RecommendationRecord generateRecommendation(Long purchaseIntentId);
+
+    List<RecommendationRecord> getRecommendationsByUser(Long userId);
+
+    List<RecommendationRecord> getAllRecommendations();
 }

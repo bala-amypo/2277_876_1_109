@@ -1,87 +1,15 @@
 package com.example.demo.dto;
 
 public class JwtResponse {
-
-    private String token;
-    private String type = "Bearer";
-    private Long id;
-    private String userId;
-    private String fullName;
+    private Long userId;
     private String email;
-    private String role;
+    private String token;
 
-    public JwtResponse() {
-    }
-
-    public JwtResponse(
-            String token,
-            Long id,
-            String userId,
-            String fullName,
-            String email,
-            String role
-    ) {
-        this.token = token;
-        this.id = id;
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.role = role;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+    // Getters & Setters
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
 }
