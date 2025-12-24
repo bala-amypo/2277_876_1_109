@@ -20,60 +20,56 @@ import java.util.UUID;
 public class AuthController {
 
     private final UserProfileService userService;
-    private final UserProfileRepository userProfileRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final UserProfileRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authManager;
+    private final JwtUtil jwtUtil;
 
     public AuthController(UserProfileService userService,
-                          UserProfileRepository userProfileRepository,
-                          AuthenticationManager authenticationManager,
-                          JwtUtil jwtUtil) {
+                          UserProfileRepository userRepo,
+                          AuthenticationManager authManager,
+                          JwtUtil jwtUtil,
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.userProfileRepository = userProfileRepository;
-        this.authenticationManager = authenticationManager;
+        this.userRepo = userRepo;
+        this.authManager = authManager;
         this.jwtUtil = jwtUtil;
-        this.passwordEncoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest req) {
 
-        if (userProfileRepository.existsByEmail(req.getEmail())) {
-            return ResponseEntity.badRequest().body(null);
+        if (userRepo.existsByEmail(req.getEmail())) {
+            return ResponseEntity.badRequest().build();
         }
 
         UserProfile user = new UserProfile();
         user.setUserId(UUID.randomUUID().toString());
-        user.setEmail(req.getEmail());
         user.setFullName(req.getFullName());
+        user.setEmail(req.getEmail());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setRole(req.getRole() != null ? req.getRole() : "USER");
         user.setActive(true);
 
-        UserProfile saved = userProfileRepository.save(user);
+        UserProfile saved = userService.createUser(user);
 
-        JwtResponse response = new JwtResponse();
-        response.setUserId(saved.getId());
-        response.setEmail(saved.getEmail());
-        response.setToken(jwtUtil.generateToken(saved.getId(), saved.getEmail(), saved.getRole()));
+        String token = jwtUtil.generateToken(saved.getId(), saved.getEmail(), saved.getRole());
+        JwtResponse resp = new JwtResponse(saved.getId(), saved.getEmail(), saved.getRole(), token);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(resp);
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest req) {
-        authenticationManager.authenticate(
+        authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
         );
 
-        UserProfile user = userProfileRepository.findByEmail(req.getEmail()).orElseThrow();
+        UserProfile user = userRepo.findByEmail(req.getEmail()).orElseThrow();
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
+        JwtResponse resp = new JwtResponse(user.getId(), user.getEmail(), user.getRole(), token);
 
-        JwtResponse response = new JwtResponse();
-        response.setUserId(user.getId());
-        response.setEmail(user.getEmail());
-        response.setToken(jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole()));
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(resp);
     }
 }
