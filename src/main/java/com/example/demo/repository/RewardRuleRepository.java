@@ -8,11 +8,14 @@ import java.util.List;
 
 @Repository
 public interface RewardRuleRepository extends JpaRepository<RewardRule, Long> {
+
     List<RewardRule> findByActiveTrue();
-    
-    default List<RewardRule> findActiveRulesForCardCategory(Long cardId, String category) {
-        return findByActiveTrue().stream()
-                .filter(r -> r.getCardId().equals(cardId) && r.getCategory().equals(category))
-                .toList();
-    }
+
+    // For RecommendationEngineServiceImpl
+    List<RewardRule> findByCardIdAndCategory(Long cardId, String category);
+
+    // Optional: If needed for tests
+    List<RewardRule> findByCardId(Long cardId);
+
+    List<RewardRule> findByCategory(String category);
 }

@@ -6,6 +6,7 @@ import com.example.demo.repository.*;
 import com.example.demo.service.RecommendationEngineService;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,7 +23,8 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
             UserProfileRepository userProfileRepository,
             CreditCardRecordRepository creditCardRepository,
             RewardRuleRepository rewardRuleRepository,
-            RecommendationRecordRepository recommendationRecordRepository) {
+            RecommendationRecordRepository recommendationRecordRepository
+    ) {
         this.purchaseIntentRepository = purchaseIntentRepository;
         this.userProfileRepository = userProfileRepository;
         this.creditCardRepository = creditCardRepository;
@@ -31,38 +33,38 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
     }
 
     @Override
-    public RecommendationRecord generateRecommendation(Long purchaseIntentId) {
-        PurchaseIntentRecord intent = purchaseIntentRepository.findById(purchaseIntentId)
-                .orElseThrow(() -> new BadRequestException("PurchaseIntent not found"));
+    public RecommendationRecord generateRecommendation(Long intentId) {
+        PurchaseIntentRecord intent = purchaseIntentRepository.findById(intentId)
+                .orElseThrow(() -> new BadRequestException("Intent not found"));
 
         UserProfile user = userProfileRepository.findById(intent.getUserId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        List<CreditCardRecord> cards = creditCardRepository.findActiveCardsByUser(user.getId());
-        if (cards.isEmpty()) throw new BadRequestException("No active cards for user");
-
-        CreditCardRecord bestCard = cards.get(0);
-        double maxReward = 0;
-
-        for (CreditCardRecord card : cards) {
-            List<RewardRule> rules = rewardRuleRepository.findActiveRulesForCardCategory(card.getId(), intent.getCategory());
-            for (RewardRule rule : rules) {
-                double reward = intent.getAmount() * rule.getMultiplier();
-                if (reward > maxReward) {
-                    maxReward = reward;
-                    bestCard = card;
-                }
-            }
+        List<CreditCardRecord> cards = creditCardRepository.findByUserIdAndActiveTrue(user.getId());
+        if (cards.isEmpty()) {
+            throw new BadRequestException("User has no active cards");
         }
 
-        RecommendationRecord rec = new RecommendationRecord();
-        rec.setUserId(user.getId());
-        rec.setPurchaseIntentId(purchaseIntentId);
-        rec.setRecommendedCardId(bestCard.getId());
-        rec.setExpectedRewardValue(maxReward);
-        rec.setCalculationDetailsJson("{\"dummy\":\"calc\"}");
+        CreditCardRecord bestCard = cards.stream()
+                .max(Comparator.comparingDouble(card -> calculateReward(card, intent)))
+                .orElse(cards.get(0));
 
-        return recommendationRecordRepository.save(rec);
+        RecommendationRecord recommendation = new RecommendationRecord();
+        recommendation.setUserId(user.getId());
+        recommendation.setPurchaseIntentId(intent.getId());
+        recommendation.setRecommendedCardId(bestCard.getId());
+        recommendation.setExpectedRewardValue(calculateReward(bestCard, intent));
+        recommendation.setCalculationDetailsJson("{}");
+
+        return recommendationRecordRepository.save(recommendation);
+    }
+
+    private double calculateReward(CreditCardRecord card, PurchaseIntentRecord intent) {
+        return rewardRuleRepository.findByCardIdAndCategory(card.getId(), intent.getCategory())
+                .stream()
+                .filter(RewardRule::getActive)
+                .mapToDouble(rule -> intent.getAmount() * rule.getMultiplier())
+                .sum();
     }
 
     @Override
