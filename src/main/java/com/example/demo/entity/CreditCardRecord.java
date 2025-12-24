@@ -2,8 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class CreditCardRecord {
@@ -15,73 +13,40 @@ public class CreditCardRecord {
     private Long userId;
     private String cardName;
     private String issuer;
-    private String cardType;
-    private Double annualFee;
+    private double annualFee;
+    private boolean active;
     private String status;
-
     private LocalDateTime createdAt;
 
-    @ManyToMany(mappedBy = "favouriteCards")
-    private Set<UserProfile> users = new HashSet<>();
-
     @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (status == null) status = "ACTIVE";
     }
 
-    public CreditCardRecord() {}
+    // Getters and setters
 
-    /* getters & setters */
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public Long getUserId() {
-        return userId;
-    }
- 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
- 
-    public String getCardName() {
-        return cardName;
-    }
- 
-    public void setCardName(String cardName) {
-        this.cardName = cardName;
-    }
- 
-    public String getIssuer() {
-        return issuer;
-    }
- 
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
- 
-    public String getCardType() {
-        return cardType;
-    }
- 
-    public void setCardType(String cardType) {
-        this.cardType = cardType;
-    }
- 
-    public Double getAnnualFee() {
-        return annualFee;
-    }
- 
-    public void setAnnualFee(Double annualFee) {
-        this.annualFee = annualFee;
-    }
- 
-    public String getStatus() {
-        return status;
-    }
- 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getCardName() { return cardName; }
+    public void setCardName(String cardName) { this.cardName = cardName; }
+
+    public String getIssuer() { return issuer; }
+    public void setIssuer(String issuer) { this.issuer = issuer; }
+
+    public double getAnnualFee() { return annualFee; }
+    public void setAnnualFee(double annualFee) { this.annualFee = annualFee; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

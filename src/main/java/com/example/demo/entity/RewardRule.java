@@ -9,23 +9,25 @@ public class RewardRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ruleName;
-    private Integer points;
-    private boolean active;
     private Long cardId;
+    private String category;
+    private double multiplier;
+    private boolean active;
+
+    // Getters and setters
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getRuleName() { return ruleName; }
-    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
+    public Long getCardId() { return cardId; }
+    public void setCardId(Long cardId) { this.cardId = cardId; }
 
-    public Integer getPoints() { return points; }
-    public void setPoints(Integer points) { this.points = points; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public double getMultiplier() { return multiplier; }
+    public void setMultiplier(double multiplier) { this.multiplier = multiplier; }
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
-
-    public Long getCardId() { return cardId; }
-    public void setCardId(Long cardId) { this.cardId = cardId; }
 }
