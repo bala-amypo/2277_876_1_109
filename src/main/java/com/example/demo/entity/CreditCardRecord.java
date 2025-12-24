@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "credit_cards")
 public class CreditCardRecord {
 
     @Id
@@ -11,21 +12,27 @@ public class CreditCardRecord {
     private Long id;
 
     private Long userId;
+
     private String cardName;
+
     private String issuer;
-    private double annualFee;
-    private boolean active;
+
+    private Double annualFee;
+
     private String status;
+
+    private Boolean active;
+
     private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();
+        if (active == null) active = true;
         if (status == null) status = "ACTIVE";
     }
 
-    // Getters and setters
-
+    // ---------------- Getters & Setters ----------------
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -38,14 +45,14 @@ public class CreditCardRecord {
     public String getIssuer() { return issuer; }
     public void setIssuer(String issuer) { this.issuer = issuer; }
 
-    public double getAnnualFee() { return annualFee; }
-    public void setAnnualFee(double annualFee) { this.annualFee = annualFee; }
-
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public Double getAnnualFee() { return annualFee; }
+    public void setAnnualFee(Double annualFee) { this.annualFee = annualFee; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
