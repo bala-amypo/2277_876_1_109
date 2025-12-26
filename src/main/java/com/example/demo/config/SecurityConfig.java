@@ -39,4 +39,10 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+    @Bean
+public JwtUtil jwtUtil() {
+    // Secret & expiry for runtime only — tests DO NOT use this bean
+    return new JwtUtil("my-test-secret-key-12345678901234567890".getBytes(), 3600000L);
+}
+
 }
