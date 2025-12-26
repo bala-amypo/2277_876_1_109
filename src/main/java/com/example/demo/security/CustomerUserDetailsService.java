@@ -6,11 +6,11 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomerUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {  // ← CLASS NAME MUST MATCH FILE NAME !!!
 
     private final UserProfileRepository repo;
 
-    public CustomerUserDetailsService(UserProfileRepository repo) {
+    public CustomUserDetailsService(UserProfileRepository repo) {
         this.repo = repo;
     }
 
@@ -21,7 +21,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
 
         return User.builder()
                 .username(u.getEmail())
-                .password(u.getPassword())   // PasswordEncoding handled in registration
+                .password(u.getPassword())
                 .roles(u.getRole())
                 .build();
     }
