@@ -8,28 +8,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserProfileController {
 
-    private final UserProfileService userService;
+    private final UserProfileService service;
 
-    public UserProfileController(UserProfileService userService) {
-        this.userService = userService;
+    public UserProfileController(UserProfileService service){
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<UserProfile> createUser(@RequestBody UserProfile user) {
-        UserProfile saved = userService.createUser(user);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<UserProfile> create(@RequestBody UserProfile user){
+        return ResponseEntity.ok(service.createUser(user));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserProfile> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<UserProfile> get(@PathVariable Long id){
+        return ResponseEntity.ok(service.getUserById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserProfile>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserProfile>> all(){
+        return ResponseEntity.ok(service.getAllUsers());
     }
 }

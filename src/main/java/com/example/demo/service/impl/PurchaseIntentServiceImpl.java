@@ -1,33 +1,34 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.PurchaseIntentRecord;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.PurchaseIntentRecordRepository;
 import com.example.demo.service.PurchaseIntentService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class PurchaseIntentServiceImpl implements PurchaseIntentService {
 
-    private final PurchaseIntentRecordRepository purchaseIntentRepository;
+    private final PurchaseIntentRecordRepository repo;
 
-    public PurchaseIntentServiceImpl(PurchaseIntentRecordRepository purchaseIntentRepository) {
-        this.purchaseIntentRepository = purchaseIntentRepository;
+    public PurchaseIntentServiceImpl(PurchaseIntentRecordRepository repo){
+        this.repo = repo;
     }
 
     @Override
-    public PurchaseIntentRecord createIntent(PurchaseIntentRecord intent) {
-        return purchaseIntentRepository.save(intent);
+    public PurchaseIntentRecord createIntent(PurchaseIntentRecord intent){
+        if(intent.getAmount()==null || intent.getAmount()<=0)
+            throw new BadRequestException("Amount must be > 0");
+        return repo.save(intent);
     }
 
     @Override
-    public List<PurchaseIntentRecord> getIntentsByUser(Long userId) {
-        return purchaseIntentRepository.findByUserId(userId);
+    public List<PurchaseIntentRecord> getIntentsByUser(Long userId){
+        return repo.findByUserId(userId);
     }
 
     @Override
-    public List<PurchaseIntentRecord> getAllIntents() {
-        return purchaseIntentRepository.findAll();
+    public List<PurchaseIntentRecord> getAllIntents(){
+        return repo.findAll();
     }
 }

@@ -1,16 +1,15 @@
 package com.example.demo.repository;
 
-import java.util.List;
 import com.example.demo.entity.RewardRule;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface RewardRuleRepository {
+import java.util.List;
 
-    RewardRule save(RewardRule rule);
-
-    List<RewardRule> findAll();
+public interface RewardRuleRepository extends JpaRepository<RewardRule, Long> {
 
     List<RewardRule> findByActiveTrue();
 
-    // ✅ REQUIRED BY RecommendationEngineService + TESTS
+    @Query("SELECT r FROM RewardRule r WHERE r.cardId=:cardId AND r.category=:category AND r.active=true")
     List<RewardRule> findActiveRulesForCardCategory(Long cardId, String category);
 }

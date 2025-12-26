@@ -1,18 +1,10 @@
 package com.example.demo.service;
 
-import java.util.*;
 import com.example.demo.entity.UserProfile;
+import java.util.List;
 
 public interface UserProfileService {
-
-    UserProfile createUser(UserProfile u);
-
+    UserProfile createUser(UserProfile profile);
     UserProfile getUserById(Long id);
-
     List<UserProfile> getAllUsers();
-
-    // REQUIRED BY AuthController
-    boolean existsByEmail(String email);
-
-    UserProfile getByEmail(String email);
 }
