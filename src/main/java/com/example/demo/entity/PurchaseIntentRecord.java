@@ -1,25 +1,42 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name="purchase_intents")
 public class PurchaseIntentRecord {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long userId;
     private Double amount;
     private String category;
     private String merchant;
+    private LocalDateTime intentDate;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @PrePersist
+    public void prePersist(){
+        this.intentDate = LocalDateTime.now();
+    }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    // getters & setters
+    public Long getId(){ return id; }
+    public void setId(Long id){ this.id=id; }
 
-    public Double getAmount() { return amount; }
-    public void setAmount(Double amount) { this.amount = amount; }
+    public Long getUserId(){ return userId; }
+    public void setUserId(Long userId){ this.userId=userId; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public Double getAmount(){ return amount; }
+    public void setAmount(Double amount){ this.amount=amount; }
 
-    public String getMerchant() { return merchant; }
-    public void setMerchant(String merchant) { this.merchant = merchant; }
+    public String getCategory(){ return category; }
+    public void setCategory(String category){ this.category=category; }
+
+    public String getMerchant(){ return merchant; }
+    public void setMerchant(String merchant){ this.merchant=merchant; }
+
+    public LocalDateTime getIntentDate(){ return intentDate; }
+    public void setIntentDate(LocalDateTime intentDate){ this.intentDate=intentDate; }
 }
