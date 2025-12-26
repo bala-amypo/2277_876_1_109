@@ -8,28 +8,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cards")
+@RequestMapping("/api/cards")
 public class CreditCardController {
 
-    private final CreditCardService cardService;
+    private final CreditCardService service;
 
-    public CreditCardController(CreditCardService cardService) {
-        this.cardService = cardService;
+    public CreditCardController(CreditCardService service){
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<CreditCardRecord> addCard(@RequestBody CreditCardRecord card) {
-        CreditCardRecord saved = cardService.addCard(card);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<CreditCardRecord> create(@RequestBody CreditCardRecord card){
+        return ResponseEntity.ok(service.addCard(card));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CreditCardRecord>> getCardsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(cardService.getCardsByUser(userId));
+    public ResponseEntity<List<CreditCardRecord>> cardsByUser(@PathVariable Long userId){
+        return ResponseEntity.ok(service.getCardsByUser(userId));
     }
 
     @GetMapping
-    public ResponseEntity<List<CreditCardRecord>> getAllCards() {
-        return ResponseEntity.ok(cardService.getAllCards());
+    public ResponseEntity<List<CreditCardRecord>> all(){
+        return ResponseEntity.ok(service.getAllCards());
     }
 }

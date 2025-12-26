@@ -1,45 +1,24 @@
 package com.example.demo.config;
 
-import com.example.demo.service.impl.UserProfileServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
 
-    private final UserProfileServiceImpl userDetailsService;
-
-    public SecurityConfig(UserProfileServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
-    // PasswordEncoder bean (only one)
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // AuthenticationManager bean
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    // Security filter chain configuration
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .anyRequest().authenticated()
-            );
+    public SecurityFilterChain filter(HttpSecurity http) throws Exception {
+        http.csrf(cs->cs.disable())
+            .authorizeHttpRequests(a->a.anyRequest().permitAll());
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authManager(AuthenticationConfiguration c) throws Exception {
+        return c.getAuthenticationManager();
     }
 }

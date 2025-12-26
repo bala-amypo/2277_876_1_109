@@ -8,27 +8,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/intents")
+@RequestMapping("/api/intents")
 public class PurchaseIntentController {
 
-    private final PurchaseIntentService intentService;
+    private final PurchaseIntentService service;
 
-    public PurchaseIntentController(PurchaseIntentService intentService) {
-        this.intentService = intentService;
+    public PurchaseIntentController(PurchaseIntentService service){
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<PurchaseIntentRecord> createIntent(@RequestBody PurchaseIntentRecord intent) {
-        return ResponseEntity.ok(intentService.createIntent(intent));
+    public ResponseEntity<PurchaseIntentRecord> create(@RequestBody PurchaseIntentRecord intent){
+        return ResponseEntity.ok(service.createIntent(intent));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PurchaseIntentRecord>> getIntentsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(intentService.getIntentsByUser(userId));
+    public ResponseEntity<List<PurchaseIntentRecord>> byUser(@PathVariable Long userId){
+        return ResponseEntity.ok(service.getIntentsByUser(userId));
     }
 
     @GetMapping
-    public ResponseEntity<List<PurchaseIntentRecord>> getAllIntents() {
-        return ResponseEntity.ok(intentService.getAllIntents());
+    public ResponseEntity<List<PurchaseIntentRecord>> all(){
+        return ResponseEntity.ok(service.getAllIntents());
     }
 }

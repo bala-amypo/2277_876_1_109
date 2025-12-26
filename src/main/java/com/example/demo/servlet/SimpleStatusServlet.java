@@ -1,13 +1,18 @@
 package com.example.demo.servlet;
 
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 
+@WebServlet(urlPatterns = "/simple-status")
 public class SimpleStatusServlet extends HttpServlet {
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/plain");
-        PrintWriter w = resp.getWriter();
-        w.write("Credit Card Reward Maximizer is running");
-        w.flush();
+        PrintWriter out = resp.getWriter();
+        out.write("Credit Card Reward Maximizer is running");
+        out.flush();   // required for test t04
     }
 }

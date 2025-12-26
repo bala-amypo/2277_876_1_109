@@ -8,27 +8,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rules")
+@RequestMapping("/api/reward-rules")
 public class RewardRuleController {
 
-    private final RewardRuleService ruleService;
+    private final RewardRuleService service;
 
-    public RewardRuleController(RewardRuleService ruleService) {
-        this.ruleService = ruleService;
+    public RewardRuleController(RewardRuleService service){
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<RewardRule> createRule(@RequestBody RewardRule rule) {
-        return ResponseEntity.ok(ruleService.createRule(rule));
+    public ResponseEntity<RewardRule> create(@RequestBody RewardRule rule){
+        return ResponseEntity.ok(service.createRule(rule));
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<RewardRule>> getActiveRules() {
-        return ResponseEntity.ok(ruleService.getActiveRules());
+    public ResponseEntity<List<RewardRule>> active(){
+        return ResponseEntity.ok(service.getActiveRules());
     }
 
     @GetMapping
-    public ResponseEntity<List<RewardRule>> getAllRules() {
-        return ResponseEntity.ok(ruleService.getAllRules());
+    public ResponseEntity<List<RewardRule>> all(){
+        return ResponseEntity.ok(service.getAllRules());
     }
 }
