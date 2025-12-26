@@ -5,9 +5,11 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
 import com.example.demo.service.RecommendationEngineService;
+import org.springframework.stereotype.Service; 
 
 import java.util.List;
 
+@Service
 public class RecommendationEngineServiceImpl implements RecommendationEngineService {
 
     private final PurchaseIntentRecordRepository intentRepo;

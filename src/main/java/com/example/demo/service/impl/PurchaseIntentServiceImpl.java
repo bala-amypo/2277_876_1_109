@@ -4,9 +4,11 @@ import com.example.demo.entity.PurchaseIntentRecord;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.PurchaseIntentRecordRepository;
 import com.example.demo.service.PurchaseIntentService;
+import org.springframework.stereotype.Service; 
 
 import java.util.List;
 
+@Service
 public class PurchaseIntentServiceImpl implements PurchaseIntentService {
 
     private final PurchaseIntentRecordRepository repo;
