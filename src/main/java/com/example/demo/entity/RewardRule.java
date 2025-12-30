@@ -15,7 +15,6 @@ public class RewardRule {
     private Double multiplier;
     private Boolean active;
 
-    // getters & setters
     public Long getId(){ return id; }
     public void setId(Long id){ this.id=id; }
 
